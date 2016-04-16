@@ -5,7 +5,7 @@ ShuffleByAlbum.bundle   <img src="https://raw.githubusercontent.com/beville/Shuf
 
 A Plex plugin to generate random playlists of albums in original order.
 
-Generally, my prefered way to listen my music is play entire albums at once.  In particular, it's nice to have a random selection of music that preserves the album structure.  Unfortunately, a lot of current music library players are missing this feature (https://plex.tv/) or, inexplicably, have dropped it (I'm looking at you iTunes).  
+As a dinosaur born before a man ever walked on the Moon, my prefered way to listen my music is play entire albums at once.  In particular, it's nice to have a random selection of music that preserves the album structure.  Unfortunately, a lot of current music library players are missing this feature (https://plex.tv/) or, inexplicably, have dropped it (I'm looking at you, iTunes).  
 
 This plugin attempts to provide a randomized album selection by generating long playlists on Plex.  It's a bit of a hack as it uses the REST API of Plex to control the server and the client that's controlling it.   
 

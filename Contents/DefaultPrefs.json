@@ -1,0 +1,20 @@
+[
+  {
+      "id": "album_count",
+      "type": "text",
+      "label": "Playlist Size",
+      "default": "10" 
+  },
+  {
+      "id": "playlist_name",
+      "type": "text",
+      "label": "Playlist Name",
+      "default": "ShuffleByAlbum",
+  },
+  {
+        "id": "server_port",
+        "type": "text",
+        "label": "Server Port",
+        "default": "32400"
+  }
+]

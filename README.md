@@ -1,4 +1,6 @@
-ShuffleByAlbum.bundle
+
+
+ShuffleByAlbum.bundle   <img src="https://raw.githubusercontent.com/beville/ShuffleByAlbum.bundle/master/Contents/Resources/icon-default.png" width="64">
 ==================
 
 A Plex plugin to generate random playlists of albums in original order.
@@ -18,3 +20,8 @@ Installation Instructions
     * Mac: ~/Library/Application Support/Plex Media Server/Plug-ins
     * Windows: C:\Users\\[user]\AppData\Local\Plex Media Server\Plug-ins
     * Linux: /var/lib/plexmediaserver/Library/Application Support/Plex Media  Server/Plug-ins
+
+![bg-art]
+
+[bg-art]: https://github.com/beville/ShuffleByAlbum.bundle/blob/master/Contents/Resources/art-default.jpg?raw=true
+[app-icon]: https://raw.githubusercontent.com/beville/ShuffleByAlbum.bundle/master/Contents/Resources/icon-default.png

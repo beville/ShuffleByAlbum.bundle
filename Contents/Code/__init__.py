@@ -16,14 +16,25 @@ def Start():
     ObjectContainer.title1 = 'Shuffle By Album'
     
     DirectoryObject.thumb = R(ICON)
+     
+    Dict['server_ip'] = 'localhost'
+    Dict['plextoken'] = os.environ['PLEXTOKEN']
     
     HTTP.CacheTime = 0
         
 ####################################################################################################     
 def MainMenu():
 
-    Dict['music_sections'] = get_music_sections("localhost", Prefs['server_port'])
-    Dict['clients'] = get_clients("localhost", Prefs['server_port'])
+    Dict['music_sections'] = get_music_sections(Dict['server_ip'], Prefs['server_port'], Dict['plextoken'])
+    clients = get_clients(Dict['server_ip'], Prefs['server_port'], Dict['plextoken'])
+
+	# Plex web clients don't seem to work
+    clients2 = []
+    for c in clients:
+        if c['product'] != "Plex Web":
+            clients2.append(c)
+
+	Dict['clients' ] = clients2
     
     if len(Dict['music_sections']) == 0:
         return ObjectContainer(header="ShuffleByAlbum",
@@ -44,8 +55,9 @@ def GeneratePlaylist():
     if len(Dict['music_sections']) > 1:
         return section_selection_menu()
     else:
-        Dict['playlist'] = generate_playlist("localhost",
+        Dict['playlist'] = generate_playlist(Dict['server_ip'],
                                              Prefs['server_port'],
+                                             Dict['plextoken'],
                                              Dict['music_sections'][0],
                                              Prefs['playlist_name'],
                                              int(Prefs['album_count']))        
@@ -66,7 +78,7 @@ def section_selection_menu():
 def client_selection_menu():
     if len(Dict['clients']) == 0:
         return ObjectContainer(header="Shuffle By Album",
-                     message="No clients to play on!")
+                     message="Found no viable clients to play on! Go to the playlists and play from there.")
 
     oc = ObjectContainer(view_group="Details")
     oc.title1 = "Play on Plex Client"
@@ -83,8 +95,9 @@ def client_selection_menu():
 def SectionSelection(idx):
     idx=int(idx)
     
-    Dict['playlist'] = generate_playlist("localhost",
+    Dict['playlist'] = generate_playlist(Dict['server_ip'],
                                          Prefs['server_port'],
+                                         Dict['plextoken'],
                                          Dict['music_sections'][idx],
                                          Prefs['playlist_name'],
                                          int(Prefs['album_count']))        
@@ -94,9 +107,10 @@ def SectionSelection(idx):
 def ClientSelection(idx):
     idx=int(idx)
     #TODO: figure out server IP??
-    Log.Debug("Going to play on client #{}".format(idx))
-    play_on_client("localhost",
+    Log.Debug("ShuffleByAlbum: Going to play on client #{} {})".format(idx, Dict['clients'][idx]['address']))
+    play_on_client(Dict['server_ip'],
                    Prefs['server_port'],
+                   Dict['plextoken'],
                    Dict['clients'][idx],
                    Dict['playlist'])
 

@@ -26,14 +26,17 @@ def http_comm(url, method, headers):
     return r    
     
 class PlexServer(object):
-    def __init__(self, host='localhost',port=32400):
+    def __init__(self, host='localhost',port=32400, token = ""):
         self.base_url = "http://{}:{}".format(host,port)
+        self.token = token
 
     def query(self, path, method):
         url = self.base_url + path
         headers = dict()
         headers['Accept'] = 'application/json'
         headers['X-Plex-Client-Identifier'] = '77777777-abab-4bc3-86a6-809c4901fb87'
+        headers['X-Plex-Token'] = self.token
+
 
         r = http_comm(url, method, headers)
         try:
@@ -133,8 +136,8 @@ class PlexServer(object):
         return self.post(path)
     
 
-def get_music_sections(server_ip, server_port):
-    server = PlexServer(server_ip, server_port)
+def get_music_sections(server_ip, server_port, token):
+    server = PlexServer(server_ip, server_port, token)
 
     music_sections = []
     # Look for music sections
@@ -145,8 +148,8 @@ def get_music_sections(server_ip, server_port):
     return music_sections
 
     
-def generate_playlist(server_ip, server_port, section, playlist_name, list_size):
-    server = PlexServer(server_ip, server_port)
+def generate_playlist(server_ip, server_port, token, section, playlist_name, list_size):
+    server = PlexServer(server_ip, server_port, token)
     max_num_of_random_albums = list_size
     
     section_key = section['key']
@@ -189,12 +192,12 @@ def generate_playlist(server_ip, server_port, section, playlist_name, list_size)
     playlist = server.createPlaylistOfAlbums(playlist_name, random_album_list, section_uuid)
     return playlist
 
-def get_clients(server_ip, server_port):
-    server = PlexServer(server_ip, server_port)
+def get_clients(server_ip, server_port, token):
+    server = PlexServer(server_ip, server_port, token)
     return server.getClients()
 
-def play_on_client(server_ip, server_port, client, playlist):
-    server = PlexServer(server_ip, server_port)
+def play_on_client(server_ip, server_port, token, client, playlist):
+    server = PlexServer(server_ip, server_port, token)
      
     CLIENT_IP = client['address']
     CLIENT_PORT = client['port']
@@ -225,13 +228,14 @@ def play_on_client(server_ip, server_port, client, playlist):
     r = http_comm(url, "GET", headers=headers)
     print r.content    
     
-def main():
+def test():
     name = "ShuffleByAlbum"
     list_size = 15
-    server_ip = "cask.local"
+    server_ip = "localhost"
     server_port = 32400
-    
-    music_sections = get_music_sections(server_ip, server_port)
+    token = "9494tdZFWpKRXsWV6Fjp"
+ 
+    music_sections = get_music_sections(server_ip, server_port, token)
     
     if not music_sections:
         print "No music sections"
@@ -240,8 +244,13 @@ def main():
     # choose the first section
     section = music_sections[0]
    
-    playlist = generate_playlist(server_ip, server_port, section, name, list_size)
-    clients = get_clients(server_ip, server_port)
+    playlist = generate_playlist(server_ip, server_port, token, section, name, list_size)
+    clients = get_clients(server_ip, server_port, token)
+    new_list = []
+    for c in clients:
+        if c['product'] != "Plex Web":
+           new_list.append(c)
+    clients = new_list
 
     if not clients:
         print "No clients"
@@ -251,9 +260,9 @@ def main():
     client = clients[0]
     
     try:
-        play_on_client(server_ip, server_port, client, playlist)
+        play_on_client(server_ip, server_port, token, client, playlist)
     except:
         print "Error talking to client"
 #------------------------------------
 if __name__ == "__main__":
-    main()
+    test()

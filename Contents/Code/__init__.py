@@ -18,15 +18,22 @@ def Start():
     DirectoryObject.thumb = R(ICON)
      
     Dict['server_ip'] = 'localhost'
-    Dict['plextoken'] = os.environ['PLEXTOKEN']
-    
+    Dict['server_port'] = os.environ['PLEXSERVERPORT']
+
+    if 'PLEXTOKEN' in os.environ:
+        Dict['plextoken'] = os.environ['PLEXTOKEN']
+    else:
+        Dict['plextoken'] = None
+
+    Log("Plex Token: {}".format(Dict['token']))    
+
     HTTP.CacheTime = 0
         
 ####################################################################################################     
 def MainMenu():
 
-    Dict['music_sections'] = get_music_sections(Dict['server_ip'], Prefs['server_port'], Dict['plextoken'])
-    clients = get_clients(Dict['server_ip'], Prefs['server_port'], Dict['plextoken'])
+    Dict['music_sections'] = get_music_sections(Dict['server_ip'], Dict['server_port'], Dict['plextoken'])
+    clients = get_clients(Dict['server_ip'], Dict['server_port'], Dict['plextoken'])
 
 	# Plex web clients don't seem to work
     clients2 = []
@@ -56,7 +63,7 @@ def GeneratePlaylist():
         return section_selection_menu()
     else:
         Dict['playlist'] = generate_playlist(Dict['server_ip'],
-                                             Prefs['server_port'],
+                                             Dict['server_port'],
                                              Dict['plextoken'],
                                              Dict['music_sections'][0],
                                              Prefs['playlist_name'],
@@ -96,7 +103,7 @@ def SectionSelection(idx):
     idx=int(idx)
     
     Dict['playlist'] = generate_playlist(Dict['server_ip'],
-                                         Prefs['server_port'],
+                                         Dict['server_port'],
                                          Dict['plextoken'],
                                          Dict['music_sections'][idx],
                                          Prefs['playlist_name'],
@@ -109,7 +116,7 @@ def ClientSelection(idx):
     #TODO: figure out server IP??
     Log.Debug("ShuffleByAlbum: Going to play on client #{} {})".format(idx, Dict['clients'][idx]['address']))
     play_on_client(Dict['server_ip'],
-                   Prefs['server_port'],
+                   Dict['server_port'],
                    Dict['plextoken'],
                    Dict['clients'][idx],
                    Dict['playlist'])

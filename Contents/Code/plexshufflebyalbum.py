@@ -35,7 +35,8 @@ class PlexServer(object):
         headers = dict()
         headers['Accept'] = 'application/json'
         headers['X-Plex-Client-Identifier'] = '77777777-abab-4bc3-86a6-809c4901fb87'
-        headers['X-Plex-Token'] = self.token
+        if self.token:
+            headers['X-Plex-Token'] = self.token
 
 
         r = http_comm(url, method, headers)

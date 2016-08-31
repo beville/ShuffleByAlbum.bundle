@@ -10,11 +10,5 @@
       "type": "text",
       "label": "Playlist Name",
       "default": "ShuffleByAlbum",
-  },
-  {
-        "id": "server_port",
-        "type": "text",
-        "label": "Server Port",
-        "default": "32400"
   }
 ]

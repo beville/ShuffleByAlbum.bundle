@@ -5,12 +5,33 @@ import os
 import json
 from pprint import pprint 
 import random
+from uuid import getnode
+
 try:
     # see if we're running in a plex plug-in
     HTTP
 except:
     import requests
     HTTP = None
+    class Logger:
+        def Debug(self, *args):
+            print args        
+    Log = Logger()
+
+BASE_HEADERS = {
+        'X-Plex-Platform': "PMS",
+        'X-Plex-Platform-Version': "1",
+        'X-Plex-Provides': 'controller',
+        'X-Plex-Product': "shufflebyalbum",
+        'X-Plex-Version': "1",
+        'X-Plex-Device': "PMS-Plugin",
+        'X-Plex-Device-Name': "pms",
+        'X-Plex-Client-Identifier': str(hex(getnode()))
+}
+
+
+
+
 
 def http_comm(url, method, headers):
     if HTTP:
@@ -32,9 +53,8 @@ class PlexServer(object):
 
     def query(self, path, method):
         url = self.base_url + path
-        headers = dict()
+        headers = dict(BASE_HEADERS)
         headers['Accept'] = 'application/json'
-        headers['X-Plex-Client-Identifier'] = '77777777-abab-4bc3-86a6-809c4901fb87'
         if self.token:
             headers['X-Plex-Token'] = self.token
 
@@ -59,7 +79,7 @@ class PlexServer(object):
         path = "/clients"
         response = self.get(path)
         try:
-            return response['_children']
+            return response['MediaContainer']['Server']
         except:
             return []
         
@@ -67,7 +87,7 @@ class PlexServer(object):
         path = "/library/sections"
         response = self.get(path)
         try:
-            return response['_children']
+            return response['MediaContainer']['Directory']
         except:
             return []
         
@@ -75,15 +95,7 @@ class PlexServer(object):
         path = "/library/sections/{}/albums".format(section)
         response = self.get(path)
         try:
-            albums = response['_children']
-            
-            for a in albums:
-                # massage the genres info:
-                genre_list = []
-                for c in a['_children']:
-                    if c['_elementType'] == 'Genre':
-                        genre_list.append(c['tag'])
-                a['genres'] = genre_list
+            albums = response['MediaContainer']['Metadata']
             return albums
         except:
             return []
@@ -92,7 +104,7 @@ class PlexServer(object):
         path = ""
         response = self.get(path)
         try:
-            return response
+            return response['MediaContainer']
         except:
             return {}
 
@@ -100,7 +112,7 @@ class PlexServer(object):
         path = "/playlists"
         response = self.get(path)
         try:
-            return response['_children']
+            return response['MediaContainer']['Metadata']
         except:
             return []
 
@@ -125,16 +137,15 @@ class PlexServer(object):
         path += ",".join(key_list)
         response = self.post(path)
         try:
-            return response['_children'][0]
+            return response['MediaContainer']['Metadata'][0]
         except:
             return []        
 
-    
     def createPlayQueueForPlaylist(self, playlist_id):
         path = "/playQueues"
         path += "?playlistID={}".format(playlist_id)
         path += "&shuffle=0&type=audio&includeChapters=1&includeRelated=1"    
-        return self.post(path)
+        return self.post(path)['MediaContainer']
     
 
 def get_music_sections(server_ip, server_port, token):
@@ -200,7 +211,7 @@ def get_clients(server_ip, server_port, token):
 def play_on_client(server_ip, server_port, token, client, playlist):
     server = PlexServer(server_ip, server_port, token)
      
-    CLIENT_IP = client['address']
+    CLIENT_IP = client['host']
     CLIENT_PORT = client['port']
     MEDIA_ID = playlist['ratingKey']
     CLIENT_ID = client['machineIdentifier']

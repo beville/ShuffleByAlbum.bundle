@@ -25,7 +25,7 @@ def Start():
     else:
         Dict['plextoken'] = None
 
-    Log("Plex Token: {}".format(Dict['token']))    
+    #Log("Plex Token: {}".format(Dict['token']))    
 
     HTTP.CacheTime = 0
         

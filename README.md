@@ -9,6 +9,8 @@ As a dinosaur born before a man ever walked on the Moon, my prefered way to list
 
 This plugin attempts to provide a randomized album selection by generating long playlists on Plex.  It's a bit of a hack as it uses the REST API of Plex to control the server and the client that's controlling it.   
 
+(Note that the feature to start the playlist on a client will only work with certain clients, notable OpenPHT and the iOS client)
+
 It's pretty easy to use:  just select the music library you want to shuffle (if there's more than one), and then if, you want, select the client you want to start the playlist on.
 
 Enjoy!

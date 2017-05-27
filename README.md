@@ -13,7 +13,7 @@ This plugin attempts to provide a randomized album selection by generating long 
 
 It's pretty easy to use:  just select the music library you want to shuffle (if there's more than one), and then if, you want, select the client you want to start the playlist on.
 
-Enjoy!
+Enjoy! 
 
 Installation Instructions
 -------------------------
